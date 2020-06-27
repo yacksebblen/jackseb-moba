@@ -7,11 +7,16 @@ public class PlayerMovement : MonoBehaviour
 {
 	public LayerMask canClick;
 	NavMeshAgent myAgent;
-	Transform target;
+	public Transform target;
+
+	PlayerDamage pDmg;
 
 	void Start()
     {
+		pDmg = GetComponent<PlayerDamage>();
 		myAgent = GetComponent<NavMeshAgent>();
+
+		GameObject.Find("Main Camera").GetComponent<CameraFollow>().SetTarget(transform);
     }
 
     void Update()
@@ -37,6 +42,15 @@ public class PlayerMovement : MonoBehaviour
 					myAgent.SetDestination(hit.point);
 				}
 			}
+		}
+
+		if (pDmg.InAutoRange(target))
+		{
+			myAgent.isStopped = true;
+		}
+		else
+		{
+			myAgent.isStopped = false;
 		}
     }
 }

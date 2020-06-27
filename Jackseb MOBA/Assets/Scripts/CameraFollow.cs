@@ -9,6 +9,11 @@ public class CameraFollow : MonoBehaviour
 	public float smoothSpeed = 10f;
 	public Vector3 offset;
 
+	private void Start()
+	{
+		SetTarget(GameObject.Find("Spawn").transform);
+	}
+
 	void LateUpdate()
     {
 		Vector3 desiredPos = target.position + offset;
@@ -17,4 +22,9 @@ public class CameraFollow : MonoBehaviour
 
 		transform.LookAt(target);
     }
+
+	public void SetTarget(Transform obj)
+	{
+		target = obj;
+	}
 }

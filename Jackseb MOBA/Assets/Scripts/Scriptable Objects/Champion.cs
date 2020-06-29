@@ -6,12 +6,18 @@ using UnityEngine;
 public class Champion : ScriptableObject
 {
 	[Header("General")]
-	public string teacherName;
+	public string champName;
 	public GameObject prefab;
 
 	public enum Targeting { auto, self, single, ground, skillshot };
 	public enum Scope { none, circular, conic, oblong };
 	public enum Effect { damage, cc, buff, debuff, dash, blink };
+
+	[Header("NavMeshAgent")]
+	public float baseOffset;
+	public float speed;
+	public float radius;
+	public float height;
 
 	[Header("Auto Attack")]
 	public float autoRange;

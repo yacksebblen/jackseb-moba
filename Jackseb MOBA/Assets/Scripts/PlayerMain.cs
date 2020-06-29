@@ -13,11 +13,22 @@ public class PlayerMain : MonoBehaviourPun
 	{
 		if (photonView.IsMine)
 		{
-			ChangeLayersRecursively(transform, 8);
+			photonView.RPC("SpawnChampRPC", RpcTarget.AllBuffered, PlayerPrefs.GetString("champ"));
 		}
 		else
 		{
 			DisableComponents();
+		}
+	}
+
+	[PunRPC]
+	void SpawnChampRPC(string champString)
+	{
+		myChamp = ChampLibrary.StringToChamp(champString);
+		Instantiate(myChamp.prefab, transform);
+		if (photonView.IsMine)
+		{
+			ChangeLayersRecursively(transform, 8);
 		}
 	}
 

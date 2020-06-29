@@ -2,25 +2,40 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Photon.Pun;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviourPun
 {
 	public LayerMask canClick;
 	NavMeshAgent myAgent;
 	public Transform target;
 
+	PlayerMain pMain;
 	PlayerDamage pDmg;
 
 	void Start()
     {
+		if (photonView.IsMine)
+		{
+			GameObject.Find("Main Camera").GetComponent<CameraFollow>().SetTarget(transform);
+		}
+
+		pMain = GetComponent<PlayerMain>();
 		pDmg = GetComponent<PlayerDamage>();
 		myAgent = GetComponent<NavMeshAgent>();
 
-		GameObject.Find("Main Camera").GetComponent<CameraFollow>().SetTarget(transform);
+		myAgent.updateRotation = false;
+
+		myAgent.baseOffset = pMain.myChamp.baseOffset;
+		myAgent.speed = pMain.myChamp.speed;
+		myAgent.radius = pMain.myChamp.radius;
+		myAgent.height = pMain.myChamp.height;
     }
 
     void Update()
     {
+		if (!photonView.IsMine) return;
+
 		if (target != null)
 		{
 			myAgent.SetDestination(target.position);
@@ -47,10 +62,29 @@ public class PlayerMovement : MonoBehaviour
 		if (pDmg.InAutoRange(target))
 		{
 			myAgent.isStopped = true;
+
+			Vector3 targetPos = new Vector3(target.transform.position.x, transform.position.y, target.transform.position.z);
+			RotateTowards(targetPos);
 		}
 		else
 		{
 			myAgent.isStopped = false;
 		}
     }
+
+	private void LateUpdate()
+	{
+		if (myAgent.velocity.sqrMagnitude > Mathf.Epsilon)
+		{
+			transform.rotation = Quaternion.LookRotation(myAgent.velocity.normalized);
+		}
+
+	}
+
+	private void RotateTowards(Vector3 target)
+	{
+		Vector3 direction = (target - transform.position).normalized;
+		Quaternion lookRotation = Quaternion.LookRotation(direction);
+		transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 100f);
+	}
 }

@@ -54,7 +54,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 	{
 		if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
 		{
-			PhotonNetwork.LoadLevel(2);
+			PhotonNetwork.LoadLevel(1);
 		}
 	}
 }

@@ -109,6 +109,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   disableRemote: []
   myChamp: {fileID: 0}
+  myLevel: 0
 --- !u!114 &680925269279260059
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140,3 +141,4 @@ MonoBehaviour:
   canAttack:
     serializedVersion: 2
     m_Bits: 1024
+  currentHealth: 0

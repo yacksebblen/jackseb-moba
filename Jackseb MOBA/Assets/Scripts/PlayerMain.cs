@@ -9,6 +9,9 @@ public class PlayerMain : MonoBehaviourPun
 
 	public Champion myChamp;
 
+	[SerializeField]
+	int myLevel;
+
 	private void Awake()
 	{
 		if (photonView.IsMine)
@@ -21,6 +24,11 @@ public class PlayerMain : MonoBehaviourPun
 		}
 	}
 
+	private void Start()
+	{
+		myLevel = 1;
+	}
+
 	[PunRPC]
 	void SpawnChampRPC(string champString)
 	{
@@ -30,6 +38,11 @@ public class PlayerMain : MonoBehaviourPun
 		{
 			ChangeLayersRecursively(transform, 8);
 		}
+	}
+
+	public float GetAttackDamage()
+	{
+		return myChamp.attackDamage + (myChamp.autoGrowthPerLevel * (myLevel - 1));
 	}
 
 	void DisableComponents()

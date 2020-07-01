@@ -13,26 +13,29 @@ public class PlayerMovement : MonoBehaviourPun
 	PlayerMain pMain;
 	PlayerDamage pDmg;
 
-	void Start()
-    {
-		if (photonView.IsMine)
-		{
-			GameObject.Find("Main Camera").GetComponent<CameraFollow>().SetTarget(transform);
-		}
-
+	void Awake()
+	{ 
 		pMain = GetComponent<PlayerMain>();
 		pDmg = GetComponent<PlayerDamage>();
 		myAgent = GetComponent<NavMeshAgent>();
 
 		myAgent.updateRotation = false;
+    }
+
+	private void Start()
+	{
+		if (photonView.IsMine)
+		{
+			GameObject.Find("Main Camera").GetComponent<CameraFollow>().SetTarget(transform);
+		}
 
 		myAgent.baseOffset = pMain.myChamp.baseOffset;
 		myAgent.speed = pMain.myChamp.speed;
 		myAgent.radius = pMain.myChamp.radius;
 		myAgent.height = pMain.myChamp.height;
-    }
+	}
 
-    void Update()
+	void Update()
     {
 		if (!photonView.IsMine) return;
 

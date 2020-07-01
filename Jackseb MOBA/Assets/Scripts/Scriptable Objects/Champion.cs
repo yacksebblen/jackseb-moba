@@ -9,46 +9,40 @@ public class Champion : ScriptableObject
 	public string champName;
 	public GameObject prefab;
 
-	public enum Targeting { auto, self, single, ground, skillshot };
-	public enum Scope { none, circular, conic, oblong };
-	public enum Effect { damage, cc, buff, debuff, dash, blink };
-
 	[Header("NavMeshAgent")]
 	public float baseOffset;
 	public float speed;
 	public float radius;
 	public float height;
 
+	[Header("Health")]
+	public float maxHealth;
+	public float healthGrowthPerLevel;
+
 	[Header("Auto Attack")]
+	public float attackDamage;
+	public float autoGrowthPerLevel;
 	public float autoRange;
 	public float autoCooldown;
 
 
 	[Header("Q Ability")]
 	public string qName;
-	public float qcooldown;
-	public Targeting qTargeting;
-	public Scope qScope;
-	public Effect qEffect;
+	public float qCooldown;
+	public float qMana;
 
 	[Header("W Ability")]
 	public string wName;
-	public float wcooldown;
-	public Targeting wTargeting;
-	public Scope wScope;
-	public Effect wEffect;
+	public float wCooldown;
+	public float wMana;
 
 	[Header("E Ability")]
 	public string eName;
-	public float ecooldown;
-	public Targeting eTargeting;
-	public Scope eScope;
-	public Effect eEffect;
+	public float eCooldown;
+	public float eMana;
 
 	[Header("R Ability")]
 	public string rName;
-	public float rcooldown;
-	public Targeting rTargeting;
-	public Scope rScope;
-	public Effect rEffect;
+	public float rCooldown;
+	public float rMana;
 }

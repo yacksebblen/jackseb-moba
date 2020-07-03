@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using SecPlayerPrefs;
+
+//			respawn player when dead
+//			maybe more feedback on autos?
 
 public class PlayerMain : MonoBehaviourPun
 {
@@ -9,14 +13,13 @@ public class PlayerMain : MonoBehaviourPun
 
 	public Champion myChamp;
 
-	[SerializeField]
-	int myLevel;
+	public int myLevel;
 
 	private void Awake()
 	{
 		if (photonView.IsMine)
 		{
-			photonView.RPC("SpawnChampRPC", RpcTarget.AllBuffered, PlayerPrefs.GetString("champ"));
+			photonView.RPC("SpawnChampRPC", RpcTarget.AllBuffered, SecurePlayerPrefs.GetString("champ"));
 		}
 		else
 		{
@@ -62,5 +65,10 @@ public class PlayerMain : MonoBehaviourPun
 			child.gameObject.layer = layer;
 			ChangeLayersRecursively(child, layer);
 		}
+	}
+
+	public void Respawn()
+	{
+		float respawnTime = (myLevel * 2) + 8;
 	}
 }

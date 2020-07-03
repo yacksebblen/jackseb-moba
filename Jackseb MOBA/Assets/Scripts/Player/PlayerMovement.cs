@@ -18,8 +18,6 @@ public class PlayerMovement : MonoBehaviourPun
 		pMain = GetComponent<PlayerMain>();
 		pDmg = GetComponent<PlayerDamage>();
 		myAgent = GetComponent<NavMeshAgent>();
-
-		myAgent.updateRotation = false;
     }
 
 	private void Start()
@@ -33,6 +31,7 @@ public class PlayerMovement : MonoBehaviourPun
 		myAgent.speed = pMain.myChamp.speed;
 		myAgent.radius = pMain.myChamp.radius;
 		myAgent.height = pMain.myChamp.height;
+		myAgent.updateRotation = !pMain.myChamp.instantTurning;
 	}
 
 	void Update()
@@ -64,30 +63,20 @@ public class PlayerMovement : MonoBehaviourPun
 
 		if (pDmg.InAutoRange(target))
 		{
-			myAgent.isStopped = true;
-
-			Vector3 targetPos = new Vector3(target.transform.position.x, transform.position.y, target.transform.position.z);
-			RotateTowards(targetPos);
+			myAgent.updatePosition = false;
 		}
 		else
 		{
-			myAgent.isStopped = false;
+			myAgent.updatePosition = true;
 		}
-    }
+	}
 
 	private void LateUpdate()
 	{
-		if (myAgent.velocity.sqrMagnitude > Mathf.Epsilon)
+		if (myAgent.velocity.sqrMagnitude > Mathf.Epsilon && !myAgent.updateRotation)
 		{
 			transform.rotation = Quaternion.LookRotation(myAgent.velocity.normalized);
 		}
 
-	}
-
-	private void RotateTowards(Vector3 target)
-	{
-		Vector3 direction = (target - transform.position).normalized;
-		Quaternion lookRotation = Quaternion.LookRotation(direction);
-		transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 100f);
 	}
 }

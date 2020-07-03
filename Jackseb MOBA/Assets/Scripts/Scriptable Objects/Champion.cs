@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Teacher", menuName = "Jackseb/Teacher", order = 1)]
+[CreateAssetMenu(fileName = "New Champion", menuName = "Jackseb/Champion", order = 1)]
 public class Champion : ScriptableObject
 {
 	[Header("General")]
@@ -14,6 +14,7 @@ public class Champion : ScriptableObject
 	public float speed;
 	public float radius;
 	public float height;
+	public bool instantTurning = true;
 
 	[Header("Health")]
 	public float maxHealth;
@@ -25,24 +26,9 @@ public class Champion : ScriptableObject
 	public float autoRange;
 	public float autoCooldown;
 
-
-	[Header("Q Ability")]
-	public string qName;
-	public float qCooldown;
-	public float qMana;
-
-	[Header("W Ability")]
-	public string wName;
-	public float wCooldown;
-	public float wMana;
-
-	[Header("E Ability")]
-	public string eName;
-	public float eCooldown;
-	public float eMana;
-
-	[Header("R Ability")]
-	public string rName;
-	public float rCooldown;
-	public float rMana;
+	[Header("Abilities")]
+	public Ability q;
+	public Ability w;
+	public Ability e;
+	public Ability r;
 }

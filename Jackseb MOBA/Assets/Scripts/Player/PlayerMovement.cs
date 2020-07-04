@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using Photon.Pun;
+using System.Runtime;
 
 public class PlayerMovement : MonoBehaviourPun
 {
@@ -13,18 +14,25 @@ public class PlayerMovement : MonoBehaviourPun
 	PlayerMain pMain;
 	PlayerDamage pDmg;
 
+	CameraFollow mainCam;
+
+	bool camLocked;
+
 	void Awake()
 	{ 
 		pMain = GetComponent<PlayerMain>();
 		pDmg = GetComponent<PlayerDamage>();
 		myAgent = GetComponent<NavMeshAgent>();
-    }
+
+		mainCam = GameObject.Find("Main Camera").GetComponent<CameraFollow>();
+	}
 
 	private void Start()
 	{
 		if (photonView.IsMine)
 		{
-			GameObject.Find("Main Camera").GetComponent<CameraFollow>().SetTarget(transform);
+			mainCam.SetTarget(transform);
+			camLocked = true;
 		}
 
 		myAgent.baseOffset = pMain.myChamp.baseOffset;
@@ -64,10 +72,21 @@ public class PlayerMovement : MonoBehaviourPun
 		if (pDmg.InAutoRange(target))
 		{
 			myAgent.updatePosition = false;
+			myAgent.SetDestination(target.position);
 		}
 		else
 		{
+			myAgent.nextPosition = transform.position;
 			myAgent.updatePosition = true;
+		}
+
+		if (Input.GetKeyDown(KeyCode.Y))
+		{
+			ToggleCameraLock();
+		}
+		else if (Input.GetKey(KeyCode.Space))
+		{
+			mainCam.OneTickPosition(transform);
 		}
 	}
 
@@ -78,5 +97,22 @@ public class PlayerMovement : MonoBehaviourPun
 			transform.rotation = Quaternion.LookRotation(myAgent.velocity.normalized);
 		}
 
+	}
+
+	void ToggleCameraLock()
+	{
+		camLocked = !camLocked;
+
+		Transform _obj;
+		if (camLocked)
+		{
+			_obj = transform;
+		}
+		else
+		{
+			_obj = null;
+		}
+
+		mainCam.SetTarget(_obj);
 	}
 }

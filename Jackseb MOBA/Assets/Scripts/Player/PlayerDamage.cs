@@ -69,13 +69,6 @@ public class PlayerDamage : MonoBehaviourPun
 			b = (col.transform == obj);
 		}
 
-		Vector3 s = GetComponent<NavMeshAgent>().transform.InverseTransformDirection(GetComponent<NavMeshAgent>().velocity).normalized;
-		float turn = s.x;
-		if (turn > 0.1f)
-		{
-			b = false;
-		}
-
 		return b;
 	}
 
@@ -84,15 +77,22 @@ public class PlayerDamage : MonoBehaviourPun
 	{
 		currentHealth -= dmg;
 		healthBar.fillAmount = (currentHealth / GetMaxHealth());
+
+		// add dying and respawn
 	}
 
 	public void AutoAttack(Transform player)
 	{
-		timeStamp = Time.time + pMain.myChamp.autoCooldown;
-		Debug.Log("Attacking " + player.name);
-		if (player.root.gameObject.GetPhotonView() != null)
+		Vector3 s = GetComponent<NavMeshAgent>().transform.InverseTransformDirection(GetComponent<NavMeshAgent>().velocity).normalized;
+		float turn = s.x;
+		if (Mathf.Abs(turn) < 0.05f)
 		{
-			player.root.gameObject.GetPhotonView().RPC("TakeDamageRPC", RpcTarget.All, pMain.GetAttackDamage());
+			timeStamp = Time.time + pMain.myChamp.autoCooldown;
+			Debug.Log("Attacking " + player.name);
+			if (player.root.gameObject.GetPhotonView() != null)
+			{
+				player.root.gameObject.GetPhotonView().RPC("TakeDamageRPC", RpcTarget.All, pMain.GetAttackDamage());
+			}
 		}
 	}
 }

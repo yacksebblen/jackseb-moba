@@ -7,17 +7,42 @@ public class CameraFollow : MonoBehaviour
 	public Transform target;
 	public Vector3 offset;
 
-	private void Start()
-	{
-		SetTarget(GameObject.Find("Spawn").transform);
-	}
+	public float edgeSize = 30f;
+	public float moveAmount = 50f;
 
 	void LateUpdate()
     {
-		transform.position = target.position + offset;
-
-		transform.LookAt(target);
+		if (target != null)
+		{
+			OneTickPosition(target);
+		}
+		else if (!Input.GetKeyDown(KeyCode.Space))
+		{
+			if (Input.mousePosition.x > Screen.width - edgeSize)
+			{
+				transform.position += new Vector3(moveAmount, 0, 0) * Time.deltaTime;
+			}
+			if (Input.mousePosition.x < edgeSize)
+			{
+				transform.position -= new Vector3(moveAmount, 0, 0) * Time.deltaTime;
+			}
+			if (Input.mousePosition.y > Screen.height - edgeSize)
+			{
+				transform.position += new Vector3(0, 0, moveAmount) * Time.deltaTime;
+			}
+			if (Input.mousePosition.y < edgeSize)
+			{
+				transform.position -= new Vector3(0, 0, moveAmount) * Time.deltaTime;
+			}
+		}
     }
+
+	public void OneTickPosition(Transform _target)
+	{
+		transform.position = _target.position + offset;
+
+		transform.LookAt(_target);
+	}
 
 	public void SetTarget(Transform obj)
 	{

@@ -7,22 +7,24 @@ using SecPlayerPrefs;
 
 public class ChampSelect : MonoBehaviourPunCallbacks
 {
-	public GameObject buttonPrefab;
+	public GameObject togglePrefab;
+	public ToggleGroup toggleGroup;
 
 	private void Start()
 	{
 		GameObject uiGrid = GameObject.Find("Canvas/Grid");
 		foreach (Champion champ in ChampLibrary.champs)
 		{
-			GameObject newButton = Instantiate(buttonPrefab, uiGrid.transform);
-			newButton.GetComponentInChildren<Text>().text = champ.champName;
-			newButton.GetComponent<Button>().onClick.AddListener(() => { SetChamp(champ); });
+			GameObject newToggle = Instantiate(togglePrefab, uiGrid.transform);
+			newToggle.GetComponentInChildren<Text>().text = champ.champName;
+			newToggle.GetComponent<Toggle>().onValueChanged.AddListener( (value) => { SetChamp(champ, value); } );
+			newToggle.GetComponent<Toggle>().group = toggleGroup;
 		}
 	}
 
-	public void SetChamp(Champion myChamp)
+	public void SetChamp(Champion myChamp, bool pressed)
 	{
-		SecurePlayerPrefs.SetString("champ", myChamp.champName);
+		if (pressed) SecurePlayerPrefs.SetString("champ", myChamp.champName);
 	}
 
 	public void ReadyGame()

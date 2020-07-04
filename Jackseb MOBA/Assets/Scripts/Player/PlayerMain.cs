@@ -4,8 +4,9 @@ using UnityEngine;
 using Photon.Pun;
 using SecPlayerPrefs;
 
-//			respawn player when dead
-//			maybe more feedback on autos?
+//		respawn player when dead
+//		this includes doing the different spawns (maybe don't do teams yet)
+//		maybe more feedback on autos?
 
 public class PlayerMain : MonoBehaviourPun
 {

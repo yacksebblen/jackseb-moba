@@ -17,6 +17,7 @@ public class PlayerMovement : MonoBehaviourPun
 	CameraFollow mainCam;
 
 	bool camLocked;
+	bool frozenDuringAuto = false;
 
 	void Awake()
 	{ 
@@ -29,17 +30,22 @@ public class PlayerMovement : MonoBehaviourPun
 
 	private void Start()
 	{
-		if (photonView.IsMine)
-		{
-			mainCam.SetTarget(transform);
-			camLocked = true;
-		}
-
 		myAgent.baseOffset = pMain.myChamp.baseOffset;
 		myAgent.speed = pMain.myChamp.speed;
 		myAgent.radius = pMain.myChamp.radius;
 		myAgent.height = pMain.myChamp.height;
 		myAgent.updateRotation = !pMain.myChamp.instantTurning;
+
+		SetDefaults();
+	}
+
+	public void SetDefaults()
+	{
+		if (photonView.IsMine)
+		{
+			mainCam.SetTarget(transform);
+			camLocked = true;
+		}
 	}
 
 	void Update()
@@ -69,10 +75,16 @@ public class PlayerMovement : MonoBehaviourPun
 			}
 		}
 
-		if (pDmg.InAutoRange(target))
+		if (pDmg.InAutoRange(target) || frozenDuringAuto)
 		{
+			StopCoroutine(AutoFreeze());
 			myAgent.updatePosition = false;
-			myAgent.SetDestination(target.position);
+			if (target != null)
+			{
+				myAgent.SetDestination(target.position);
+			}
+			frozenDuringAuto = true;
+			StartCoroutine(AutoFreeze());
 		}
 		else
 		{
@@ -90,6 +102,12 @@ public class PlayerMovement : MonoBehaviourPun
 		}
 	}
 
+	IEnumerator AutoFreeze()
+	{
+		yield return new WaitForSeconds(pMain.myChamp.timeFrozenAfterAuto);
+		frozenDuringAuto = false;
+	}
+
 	private void LateUpdate()
 	{
 		if (myAgent.velocity.sqrMagnitude > Mathf.Epsilon && !myAgent.updateRotation)
@@ -105,6 +123,21 @@ public class PlayerMovement : MonoBehaviourPun
 
 		Transform _obj;
 		if (camLocked)
+		{
+			_obj = transform;
+		}
+		else
+		{
+			_obj = null;
+		}
+
+		mainCam.SetTarget(_obj);
+	}
+
+	public void SetCameraLock(bool locked)
+	{
+		Transform _obj;
+		if (locked)
 		{
 			_obj = transform;
 		}

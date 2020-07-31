@@ -25,6 +25,7 @@ public class Champion : ScriptableObject
 	public float autoGrowthPerLevel;
 	public float autoRange;
 	public float autoCooldown;
+	public float timeFrozenAfterAuto;
 
 	[Header("Abilities")]
 	public Ability q;

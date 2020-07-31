@@ -27,9 +27,19 @@ public class PlayerDamage : MonoBehaviourPun
 
 	private void Start()
 	{
-		currentHealth = pMain.myChamp.maxHealth;
-
 		intHealthRot = healthBar.transform.rotation;
+		if (photonView.IsMine)
+		{
+			healthBar.color = Color.green;
+		}
+
+		SetDefaults();
+	}
+
+	public void SetDefaults()
+	{
+		currentHealth = GetMaxHealth();
+		TakeDamageRPC(0);
 	}
 
 	void Update()
@@ -42,6 +52,7 @@ public class PlayerDamage : MonoBehaviourPun
 			}
 		}
 
+		// TEST COMMAND
 		if (Input.GetKeyDown(KeyCode.U))
 		{
 			photonView.RPC("TakeDamageRPC", RpcTarget.All, 100f);
@@ -78,7 +89,10 @@ public class PlayerDamage : MonoBehaviourPun
 		currentHealth -= dmg;
 		healthBar.fillAmount = (currentHealth / GetMaxHealth());
 
-		// add dying and respawn
+		if (currentHealth <= 0)
+		{
+			pMain.Die();
+		}
 	}
 
 	public void AutoAttack(Transform player)

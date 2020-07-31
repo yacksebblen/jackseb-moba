@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using SecPlayerPrefs;
 
+//		fix the auto attacking somehow
 //		respawn player when dead
 //		this includes doing the different spawns (maybe don't do teams yet)
 //		maybe more feedback on autos?
@@ -16,8 +17,18 @@ public class PlayerMain : MonoBehaviourPun
 
 	public int myLevel;
 
+	PlayerMovement pMove;
+	PlayerDamage pDmg;
+
+	GameManager gManager;
+
 	private void Awake()
 	{
+		pMove = GetComponent<PlayerMovement>();
+		pDmg = GetComponent<PlayerDamage>();
+
+		gManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+		
 		if (photonView.IsMine)
 		{
 			photonView.RPC("SpawnChampRPC", RpcTarget.AllBuffered, SecurePlayerPrefs.GetString("champ"));
@@ -68,8 +79,48 @@ public class PlayerMain : MonoBehaviourPun
 		}
 	}
 
+	void EnableRecursively(Transform root, bool enable)
+	{
+		foreach (Transform child in root)
+		{
+			child.gameObject.SetActive(enable);
+			EnableRecursively(child, enable);
+		}
+	}
+
+	public void Die()
+	{
+		if (photonView.IsMine)
+		{
+			pMove.SetCameraLock(false);
+		}
+		
+		EnableRecursively(transform, false);
+		pMove.enabled = false;
+		pDmg.enabled = false;
+
+		float respawnTime = (myLevel * 2) + 8;
+		StartCoroutine(RespawnWait(respawnTime));
+
+	}
+
+	IEnumerator RespawnWait(float time)
+	{
+		yield return new WaitForSeconds(time);
+		Respawn();
+	}
+
 	public void Respawn()
 	{
-		float respawnTime = (myLevel * 2) + 8;
+		EnableRecursively(transform, true);
+		pMove.enabled = true;
+		pDmg.enabled = true;
+
+		pMove.SetDefaults();
+		pDmg.SetDefaults();
+
+		Transform mySpawn = gManager.GetSpawnPoint();
+		transform.position = mySpawn.position;
+		transform.rotation = mySpawn.rotation;
 	}
 }

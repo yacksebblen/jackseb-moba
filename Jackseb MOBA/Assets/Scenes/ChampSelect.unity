@@ -810,6 +810,7 @@ MonoBehaviour:
   togglePrefab: {fileID: 4040322166132961216, guid: beb76b6015c49364b9cc7f6fc9a1c314,
     type: 3}
   toggleGroup: {fileID: 1704919771}
+  readyButton: {fileID: 1505553240}
 --- !u!4 &2045686958
 Transform:
   m_ObjectHideFlags: 0

@@ -854,7 +854,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: Player
-  spawnPoint: {fileID: 315317626}
+  spawnPoints:
+  - {fileID: 315317626}
+  - {fileID: 1789545913}
+  - {fileID: 603354528}
+  - {fileID: 1148273811}
+  - {fileID: 1081142709}
+  - {fileID: 596077752}
 --- !u!1 &925684328
 GameObject:
   m_ObjectHideFlags: 0
